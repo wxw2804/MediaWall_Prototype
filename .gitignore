@@ -1,0 +1,9 @@
+MideaWallProject_001/Binaries/
+MideaWallProject_001/DerivedDataCache/
+MideaWallProject_001/Intermediate/
+MideaWallProject_001/Saved/
+MideaWallProject_001/.vs/
+*.sln
+venv/
+.venv/
+__pycache__/
