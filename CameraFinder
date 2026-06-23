@@ -1,0 +1,43 @@
+import cv2
+
+def check_available_camera_indices(max_to_test=10):
+    """
+    PC에 연결된 카메라 인덱스를 0번부터 순차적으로 테스트하여 
+    현재 활성화되어 있는 카메라 인덱스 목록을 반환합니다.
+    """
+    available_indices = []
+    
+    print("==================================================")
+    print("📸 PC 연결 카메라 인덱스 스캔을 시작합니다...")
+    print("==================================================")
+    
+    for index in range(max_to_test):
+        # cv2.CAP_DSHOW 옵션은 Windows 환경에서 카메라를 고속으로 매핑하고 
+        # 불필요한 경고 로그를 줄여주는 데 효과적입니다.
+        cap = cv2.VideoCapture(index, cv2.CAP_DSHOW)
+        
+        if cap.isOpened():
+            # 카메라가 정상적으로 열리면 폭과 높이 정보를 임시로 가져와 확인합니다.
+            width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+            height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+            print(f"[✅ 성공] 인덱스 {index}번 카메라가 활성화되었습니다. (해상도: {int(width)}x{int(height)})")
+            
+            available_indices.append(index)
+            cap.release()  # 다음 검사를 위해 점유 해제
+        else:
+            # 닫혀 있는 인덱스는 가볍게 패스합니다.
+            pass
+
+    print("==================================================")
+    return available_indices
+
+if __name__ == "__main__":
+    active_cameras = check_available_camera_indices(max_to_test=6)
+    
+    if active_cameras:
+        print(f"🎉 스캔 완료! 현재 사용 가능한 카메라 인덱스: {active_cameras}")
+        print(f"👉 main.py 소스코드의 cv2.VideoCapture({active_cameras[0]}) 자리에 위 숫자 중 하나를 대입하세요.")
+    else:
+        print("❌ [경고] 연결된 카메라를 하나도 찾지 못했습니다.")
+        print("   - 케이블 연결 상태를 확인하거나 드라이버가 올바르게 잡혔는지 체크해 주세요.")
+    print("==================================================")
